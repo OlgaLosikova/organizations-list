@@ -1,0 +1,41 @@
+@import "./base.css";
+
+#app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-weight: normal;
+}
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6rem;
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #646cff;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+button:disabled {
+  background-color: #ccc;
+  border: none;
+  cursor: default;
+}
+a {
+  color: white;
+  border: 1px white;
+}
+@media (min-width: 1024px) {
+  body {
+    place-items: center;
+  }
+}
