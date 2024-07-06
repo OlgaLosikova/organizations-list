@@ -6,9 +6,6 @@ defineProps({
   decrementOrganizations: Function,
 });
 const emit = defineEmits(["sendOrganizationId"]);
-
-
-
 </script>
 
 <template>
@@ -40,7 +37,7 @@ const emit = defineEmits(["sendOrganizationId"]);
 }
 .delete-icon {
   position: absolute;
-  top: 20px;
+  top: 19px;
   right: 10px;
   cursor: pointer;
 }

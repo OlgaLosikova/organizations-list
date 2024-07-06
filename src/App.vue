@@ -14,6 +14,7 @@ const filters = reactive({
   nameDirection: "",
   companyDirection: "",
   searchValue: "",
+  isFiltred: false,
 });
 const page = reactive({
   pageNumber: 1,
@@ -21,32 +22,66 @@ const page = reactive({
   disabledPrev: true,
   itemIndex: 0,
 });
-const organizationId = reactive({ idValue: "" });
-const organizationsPage = ref(data.slice(page.itemIndex, page.itemIndex + 10));
+// const newOrganization = reactive({
+//   name: "",
+//   company: "",
+//   phone: "",
+//   id: data.length + 1,
+// });
+const changedOrganizations = ref(data);
+const filtredOrganizations = ref([]);
+const organizationsPage = ref(
+  changedOrganizations.value.slice(page.itemIndex, page.itemIndex + 10)
+);
+
 const openWindow = () => {
   window.isWindowOpened = true;
 };
 const closeModal = () => {
   window.isWindowOpened = false;
 };
-
 const submitHandler = () => {
   //here you do whatever
 };
 const changeInput = (e) => {
-  filters.value = e.target.value;
-  filters.value === "" ? (filters.isEmpty = true) : (filters.isEmpty = false);
+  filters.searchValue = e.target.value;
+  filtredOrganizations.value = changedOrganizations.value.filter((obj) =>
+    obj.name.toLowerCase().includes(filters.searchValue.toLowerCase())
+  );
+  filters.searchValue === ""
+    ? (filters.isFiltred = false)
+    : (filters.isFiltred = true);
+  goToFirstPage();
+  rotatePage();
 };
-
+const goToFirstPage = () => {
+  page.itemIndex = 0;
+  page.pageNumber = 1;
+  page.disabledPrev = true;
+  filtredOrganizations.value.length > 5
+    ? (page.disabledNext = false)
+    : (page.disabledNext = true);
+};
 const rotatePage = () => {
-  organizationsPage.value = data.slice(page.itemIndex, page.itemIndex + 10);
+  organizationsPage.value = (
+    filtredOrganizations.value.length !== 0 &&
+    filtredOrganizations.value.length !== 25
+      ? filtredOrganizations.value
+      : changedOrganizations.value
+  ).slice(page.itemIndex, page.itemIndex + 10);
 };
 const setNextPage = () => {
   page.itemIndex += 10;
   page.pageNumber++;
   page.disabledPrev = false;
   rotatePage();
-  if (page.itemIndex >= data.length - 11) {
+  if (
+    page.itemIndex >=
+    (filtredOrganizations.value.length !== 0 &&
+    filtredOrganizations.value.length !== 25
+      ? filtredOrganizations.value.length - 11
+      : changedOrganizations.value.length - 11)
+  ) {
     page.disabledNext = true;
   }
 };
@@ -58,17 +93,31 @@ const setPrevPage = () => {
   if (page.itemIndex === 0) {
     page.disabledPrev = true;
   }
+  if (
+    page.itemIndex >=
+    (filtredOrganizations.value.length !== 0 &&
+    filtredOrganizations.value.length !== 25
+      ? filtredOrganizations.value.length - 11
+      : changedOrganizations.value.length - 11)
+  ) {
+    page.disabledNext = true;
+  }
 };
 const sortOrganizations = () => {
+  const sortData =
+    filtredOrganizations.value.length !== 0 &&
+    filtredOrganizations.value.length !== 25
+      ? filtredOrganizations.value
+      : changedOrganizations.value;
   if (filters.nameDirection === "DESC") {
-    data.sort((a, b) => (a.name < b.name ? 1 : -1));
+    sortData.sort((a, b) => (a.name < b.name ? 1 : -1));
   } else if (filters.nameDirection === "ASC") {
-    data.sort((a, b) => (a.name > b.name ? 1 : -1));
+    sortData.sort((a, b) => (a.name > b.name ? 1 : -1));
   } else if (filters.companyDirection === "DESC") {
-    data.sort((a, b) => (a.company < b.company ? 1 : -1));
+    sortData.sort((a, b) => (a.company < b.company ? 1 : -1));
   } else if (filters.companyDirection === "ASC") {
-    data.sort((a, b) => (a.company > b.company ? 1 : -1));
-  } else data.sort((a, b) => a.id - b.id);
+    sortData.sort((a, b) => (a.company > b.company ? 1 : -1));
+  } else sortData.sort((a, b) => a.id - b.id);
   rotatePage();
 };
 const sortName = () => {
@@ -89,11 +138,12 @@ const sortCompany = () => {
     : filters.companyDirection === "ASC" && (filters.companyDirection = "");
   sortOrganizations();
 };
+
 const decrementOrganizations = (id) => {
-  organizationId.idValue = id;
-  console.log(organizationId.idValue);
-  data.filter((obj) => obj.id !== organizationId.idValue);
-  console.log(data);
+  changedOrganizations.value = changedOrganizations.value.filter(
+    (obj) => obj.id !== id
+  );
+  console.log("changedOrganizations.value", changedOrganizations.value);
   rotatePage();
 };
 </script>
@@ -150,6 +200,11 @@ const decrementOrganizations = (id) => {
     />
   </main>
   <PaginateOrganizations
+    v-if="
+      filters.isFiltred
+        ? filtredOrganizations.length >= 10
+        : changedOrganizations.length >= 10 
+    "
     :setPrevPage="setPrevPage"
     :setNextPage="setNextPage"
     :pageNumber="page.pageNumber"
