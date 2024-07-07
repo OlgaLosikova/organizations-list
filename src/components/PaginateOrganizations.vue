@@ -17,13 +17,13 @@ defineProps({
 </template>
 
 <style scoped>
-.footer{
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
-.page-number{
-    text-align: center;
-    padding: 0 1rem;
+.page-number {
+  text-align: center;
+  padding: 0 1rem;
 }
 </style>

@@ -4,7 +4,7 @@ import { onClickOutside } from "@vueuse/core";
 defineProps({
   isOpen: Boolean,
 });
-let organizationId=25;
+let organizationId = 25;
 const newOrganization = reactive({
   name: "",
   company: "",
@@ -41,7 +41,7 @@ const checkFill = () => {
   <div v-if="isOpen" class="modal-background">
     <div class="modal" ref="target">
       <p>Добавить организацию</p>
-      <form>
+      <form class="form" @submit.prevent="onSubmit">
         <div class="input-container">
           <input
             @input="checkFill"
@@ -64,9 +64,9 @@ const checkFill = () => {
           />
         </div>
         <div class="button-wrapper">
-          <button @click="emit('modalClose')" class="modal-button">
+          <button type="button" @click="emit('modalClose')" class="modal-button">
             Отмена</button
-          ><button :disabled="!isFilled" @click="onSubmit" class="modal-button">
+          ><button :disabled="!isFilled" type="submit" class="modal-button">
             Ок
           </button>
         </div>
@@ -80,7 +80,7 @@ const checkFill = () => {
   display: flex;
   position: relative;
   margin: auto;
-  width: 450px;
+  max-width: 95vw;
   height: 300px;
   padding: 32px 36px 32px 36px;
   border-radius: 8px;
@@ -105,7 +105,6 @@ const checkFill = () => {
   font-size: 1.5rem;
 }
 .modal-input {
-  width: 350px;
   height: 36px;
   margin: 0.5rem 0;
   border-radius: 4px;
@@ -115,6 +114,9 @@ const checkFill = () => {
 }
 .modal-button {
   margin: 0 0.5rem;
+}
+.form{
+  width: 100%;
 }
 .input-container {
   display: flex;

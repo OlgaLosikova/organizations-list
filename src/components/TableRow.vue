@@ -40,12 +40,19 @@ defineProps({
   right: 10px;
   cursor: pointer;
 }
-@media (max-width: 570px) {
+@media (max-width: 690px) {
   .table-data {
     padding: 0.5rem;
   }
+}
+@media (max-width: 615px) {
   .delete-icon {
     right: 2px;
+    top: 16px;
+  }
+}
+@media (max-width: 570px) {
+  .delete-icon {
     top: 24px;
   }
 }

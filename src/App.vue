@@ -35,10 +35,8 @@ const closeModal = () => {
   window.isWindowOpened = false;
 };
 const submitHandler = (newOrganization) => {
-  console.log("newOrganization", newOrganization);
   changedOrganizations.value.push(newOrganization);
-  filters.isFiltred &&filtredOrganizations.value.push(newOrganization);
-  console.log("1", changedOrganizations.value);
+  filters.isFiltred && filtredOrganizations.value.push(newOrganization);
   rotatePage();
   checkListLenth();
 };
@@ -64,7 +62,6 @@ const goToFirstPage = () => {
     : (page.disabledNext = true);
 };
 const rotatePage = () => {
-  console.log("filtredOrganizations.value", filtredOrganizations.value);
   organizationsPage.value = (
     filters.isFiltred ? filtredOrganizations.value : changedOrganizations.value
   ).slice(page.itemIndex, page.itemIndex + 10);
@@ -138,9 +135,6 @@ const decrementOrganizations = (id) => {
     (filtredOrganizations.value = filtredOrganizations.value.filter(
       (obj) => obj.id !== id
     ));
-
-  console.log("dec changedOrganizations.value", changedOrganizations.value);
-  console.log("dec filtredOrganizations.value", filtredOrganizations.value);
   rotatePage();
   checkListLenth();
 };
