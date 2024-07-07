@@ -4,7 +4,7 @@ import { onClickOutside } from "@vueuse/core";
 defineProps({
   isOpen: Boolean,
 });
-let organizationId = 25;
+let organizationId = 26;
 const newOrganization = reactive({
   name: "",
   company: "",
@@ -13,7 +13,9 @@ const newOrganization = reactive({
 let isFilled = ref(false);
 const emit = defineEmits(["modalClose", "onSubmit"]);
 const target = ref(null);
-onClickOutside(target, () => emit("modalClose"));
+onClickOutside(target, () => {
+  resetFill();
+});
 const onSubmit = () => {
   organizationId++;
   emit("onSubmit", {
@@ -22,11 +24,8 @@ const onSubmit = () => {
     phone: newOrganization.phone,
     id: organizationId,
   });
-  emit("modalClose");
-  newOrganization.name = "";
-  newOrganization.company = "";
-  newOrganization.phone = "";
-  isFilled.value = false;
+  
+  resetFill();
 };
 const checkFill = () => {
   newOrganization.company !== "" &&
@@ -34,6 +33,13 @@ const checkFill = () => {
   newOrganization.phone !== ""
     ? (isFilled.value = true)
     : (isFilled.value = false);
+};
+const resetFill = () => {
+  emit("modalClose");
+  newOrganization.name = "";
+  newOrganization.company = "";
+  newOrganization.phone = "";
+  isFilled.value = false;
 };
 </script>
 
@@ -64,7 +70,11 @@ const checkFill = () => {
           />
         </div>
         <div class="button-wrapper">
-          <button type="button" @click="emit('modalClose')" class="modal-button">
+          <button
+            type="button"
+            @click="resetFill"
+            class="modal-button"
+          >
             Отмена</button
           ><button :disabled="!isFilled" type="submit" class="modal-button">
             Ок
@@ -115,7 +125,7 @@ const checkFill = () => {
 .modal-button {
   margin: 0 0.5rem;
 }
-.form{
+.form {
   width: 100%;
 }
 .input-container {

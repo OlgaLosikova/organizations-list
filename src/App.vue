@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref } from "vue";
+import { reactive, ref, watch } from "vue";
 import Header from "./components/Header.vue";
 import TableRow from "./components/TableRow.vue";
 import PaginateOrganizations from "./components/PaginateOrganizations.vue";
@@ -36,7 +36,6 @@ const closeModal = () => {
 };
 const submitHandler = (newOrganization) => {
   changedOrganizations.value.push(newOrganization);
-  filters.isFiltred && filtredOrganizations.value.push(newOrganization);
   rotatePage();
   checkListLenth();
 };
@@ -50,7 +49,6 @@ const changeInput = (e) => {
       ? (filters.isFiltred = false)
       : (filters.isFiltred = true);
     goToFirstPage();
-    rotatePage();
   }
 };
 const goToFirstPage = () => {
@@ -70,14 +68,14 @@ const setNextPage = () => {
   page.itemIndex += 10;
   page.pageNumber++;
   page.disabledPrev = false;
-  rotatePage();
+
   checkListLenth();
 };
 const setPrevPage = () => {
   page.itemIndex -= 10;
   page.pageNumber--;
   page.disabledNext = false;
-  rotatePage();
+
   if (page.itemIndex === 0) {
     page.disabledPrev = true;
   }
@@ -135,9 +133,10 @@ const decrementOrganizations = (id) => {
     (filtredOrganizations.value = filtredOrganizations.value.filter(
       (obj) => obj.id !== id
     ));
-  rotatePage();
+
   checkListLenth();
 };
+watch([changedOrganizations, filtredOrganizations, page], rotatePage);
 </script>
 
 <template>
