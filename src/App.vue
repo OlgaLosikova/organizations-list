@@ -8,7 +8,6 @@ import data from "../src/assets/data.json";
 
 const window = reactive({
   isWindowOpened: false,
-  isWindowFilled: false,
 });
 const filters = reactive({
   nameDirection: "",
@@ -22,12 +21,7 @@ const page = reactive({
   disabledPrev: true,
   itemIndex: 0,
 });
-// const newOrganization = reactive({
-//   name: "",
-//   company: "",
-//   phone: "",
-//   id: data.length + 1,
-// });
+
 const changedOrganizations = ref(data);
 const filtredOrganizations = ref([]);
 const organizationsPage = ref(
@@ -40,34 +34,39 @@ const openWindow = () => {
 const closeModal = () => {
   window.isWindowOpened = false;
 };
-const submitHandler = () => {
-  //here you do whatever
+const submitHandler = (newOrganization) => {
+  console.log("newOrganization", newOrganization);
+  changedOrganizations.value.push(newOrganization);
+  filters.isFiltred &&filtredOrganizations.value.push(newOrganization);
+  console.log("1", changedOrganizations.value);
+  rotatePage();
+  checkListLenth();
 };
 const changeInput = (e) => {
   filters.searchValue = e.target.value;
-  filtredOrganizations.value = changedOrganizations.value.filter((obj) =>
-    obj.name.toLowerCase().includes(filters.searchValue.toLowerCase())
-  );
-  filters.searchValue === ""
-    ? (filters.isFiltred = false)
-    : (filters.isFiltred = true);
-  goToFirstPage();
-  rotatePage();
+  if (filters.searchValue.length > 2 || filters.searchValue === "") {
+    filtredOrganizations.value = changedOrganizations.value.filter((obj) =>
+      obj.name.toLowerCase().includes(filters.searchValue.toLowerCase())
+    );
+    filters.searchValue === ""
+      ? (filters.isFiltred = false)
+      : (filters.isFiltred = true);
+    goToFirstPage();
+    rotatePage();
+  }
 };
 const goToFirstPage = () => {
   page.itemIndex = 0;
   page.pageNumber = 1;
   page.disabledPrev = true;
-  filtredOrganizations.value.length > 5
+  filtredOrganizations.value.length > 10
     ? (page.disabledNext = false)
     : (page.disabledNext = true);
 };
 const rotatePage = () => {
+  console.log("filtredOrganizations.value", filtredOrganizations.value);
   organizationsPage.value = (
-    filtredOrganizations.value.length !== 0 &&
-    filtredOrganizations.value.length !== 25
-      ? filtredOrganizations.value
-      : changedOrganizations.value
+    filters.isFiltred ? filtredOrganizations.value : changedOrganizations.value
   ).slice(page.itemIndex, page.itemIndex + 10);
 };
 const setNextPage = () => {
@@ -75,15 +74,7 @@ const setNextPage = () => {
   page.pageNumber++;
   page.disabledPrev = false;
   rotatePage();
-  if (
-    page.itemIndex >=
-    (filtredOrganizations.value.length !== 0 &&
-    filtredOrganizations.value.length !== 25
-      ? filtredOrganizations.value.length - 11
-      : changedOrganizations.value.length - 11)
-  ) {
-    page.disabledNext = true;
-  }
+  checkListLenth();
 };
 const setPrevPage = () => {
   page.itemIndex -= 10;
@@ -93,22 +84,22 @@ const setPrevPage = () => {
   if (page.itemIndex === 0) {
     page.disabledPrev = true;
   }
+  checkListLenth();
+};
+const checkListLenth = () => {
   if (
     page.itemIndex >=
-    (filtredOrganizations.value.length !== 0 &&
-    filtredOrganizations.value.length !== 25
-      ? filtredOrganizations.value.length - 11
-      : changedOrganizations.value.length - 11)
+    (filters.isFiltred
+      ? filtredOrganizations.value.length - 10
+      : changedOrganizations.value.length - 10)
   ) {
     page.disabledNext = true;
-  }
+  } else page.disabledNext = false;
 };
 const sortOrganizations = () => {
-  const sortData =
-    filtredOrganizations.value.length !== 0 &&
-    filtredOrganizations.value.length !== 25
-      ? filtredOrganizations.value
-      : changedOrganizations.value;
+  const sortData = filters.isFiltred
+    ? filtredOrganizations.value
+    : changedOrganizations.value;
   if (filters.nameDirection === "DESC") {
     sortData.sort((a, b) => (a.name < b.name ? 1 : -1));
   } else if (filters.nameDirection === "ASC") {
@@ -143,8 +134,15 @@ const decrementOrganizations = (id) => {
   changedOrganizations.value = changedOrganizations.value.filter(
     (obj) => obj.id !== id
   );
-  console.log("changedOrganizations.value", changedOrganizations.value);
+  filters.isFiltred &&
+    (filtredOrganizations.value = filtredOrganizations.value.filter(
+      (obj) => obj.id !== id
+    ));
+
+  console.log("dec changedOrganizations.value", changedOrganizations.value);
+  console.log("dec filtredOrganizations.value", filtredOrganizations.value);
   rotatePage();
+  checkListLenth();
 };
 </script>
 
@@ -196,14 +194,14 @@ const decrementOrganizations = (id) => {
       :isFilled="window.isWindowFilled"
       :isOpen="window.isWindowOpened"
       @modalClose="closeModal"
-      @submit="submitHandler"
+      @onSubmit="submitHandler"
     />
   </main>
   <PaginateOrganizations
     v-if="
       filters.isFiltred
         ? filtredOrganizations.length >= 10
-        : changedOrganizations.length >= 10 
+        : changedOrganizations.length >= 10
     "
     :setPrevPage="setPrevPage"
     :setNextPage="setNextPage"
@@ -236,5 +234,10 @@ const decrementOrganizations = (id) => {
 .sort-icon {
   position: relative;
   top: 5px;
+}
+@media (max-width: 570px) {
+  .table-title {
+    padding: 0.5rem;
+  }
 }
 </style>

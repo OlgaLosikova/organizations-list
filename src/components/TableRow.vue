@@ -5,7 +5,6 @@ defineProps({
   phone: String,
   decrementOrganizations: Function,
 });
-const emit = defineEmits(["sendOrganizationId"]);
 </script>
 
 <template>
@@ -40,5 +39,14 @@ const emit = defineEmits(["sendOrganizationId"]);
   top: 19px;
   right: 10px;
   cursor: pointer;
+}
+@media (max-width: 570px) {
+  .table-data {
+    padding: 0.5rem;
+  }
+  .delete-icon {
+    right: 2px;
+    top: 24px;
+  }
 }
 </style>

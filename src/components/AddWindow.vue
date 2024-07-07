@@ -1,33 +1,76 @@
 <script setup>
-import { defineProps, defineEmits, ref } from "vue";
+import { defineProps, defineEmits, ref, reactive } from "vue";
 import { onClickOutside } from "@vueuse/core";
 defineProps({
   isOpen: Boolean,
-  isFilled:Boolean,
 });
-const emit = defineEmits(["modalClose"]);
+let organizationId=25;
+const newOrganization = reactive({
+  name: "",
+  company: "",
+  phone: "",
+});
+let isFilled = ref(false);
+const emit = defineEmits(["modalClose", "onSubmit"]);
 const target = ref(null);
 onClickOutside(target, () => emit("modalClose"));
+const onSubmit = () => {
+  organizationId++;
+  emit("onSubmit", {
+    name: newOrganization.name,
+    company: newOrganization.company,
+    phone: newOrganization.phone,
+    id: organizationId,
+  });
+  emit("modalClose");
+  newOrganization.name = "";
+  newOrganization.company = "";
+  newOrganization.phone = "";
+  isFilled.value = false;
+};
+const checkFill = () => {
+  newOrganization.company !== "" &&
+  newOrganization.name !== "" &&
+  newOrganization.phone !== ""
+    ? (isFilled.value = true)
+    : (isFilled.value = false);
+};
 </script>
 
 <template>
   <div v-if="isOpen" class="modal-background">
     <div class="modal" ref="target">
       <p>Добавить организацию</p>
-      <div class="input-container">
-        <input class="modal-input" placeholder="Название" type="text" /><input
-          class="modal-input"
-          placeholder="Номер телефона"
-          type="text"
-        /><input class="modal-input" placeholder="ФИО директора" type="text" />
-      </div>
-      <div class="button-wrapper">
-        <button  @click="emit('modalClose')" class="modal-button">
-          Отмена</button
-        ><button :disabled="!isFilled" @click="emit('modalClose')" class="modal-button">
-          Ок
-        </button>
-      </div>
+      <form>
+        <div class="input-container">
+          <input
+            @input="checkFill"
+            v-model="newOrganization.company"
+            class="modal-input"
+            placeholder="Название"
+            type="text"
+          /><input
+            @input="checkFill"
+            v-model="newOrganization.phone"
+            class="modal-input"
+            placeholder="Номер телефона"
+            type="text"
+          /><input
+            @input="checkFill"
+            v-model="newOrganization.name"
+            class="modal-input"
+            placeholder="ФИО директора"
+            type="text"
+          />
+        </div>
+        <div class="button-wrapper">
+          <button @click="emit('modalClose')" class="modal-button">
+            Отмена</button
+          ><button :disabled="!isFilled" @click="onSubmit" class="modal-button">
+            Ок
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 </template>
@@ -65,12 +108,20 @@ onClickOutside(target, () => emit("modalClose"));
   width: 350px;
   height: 36px;
   margin: 0.5rem 0;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  outline: transparent;
+  padding-left: 1rem;
 }
 .modal-button {
   margin: 0 0.5rem;
 }
-.input-container{
+.input-container {
   display: flex;
   flex-direction: column;
+}
+.button-wrapper {
+  display: flex;
+  justify-content: center;
 }
 </style>

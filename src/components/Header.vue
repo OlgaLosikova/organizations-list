@@ -1,7 +1,7 @@
 <script setup>
 defineProps({
   changeInput: Function,
-  openWindow:Function,
+  openWindow: Function,
 });
 </script>
 
@@ -14,7 +14,6 @@ defineProps({
         type="search"
         @input="changeInput"
       />
-
     </div>
     <button @click="openWindow">Добавить</button>
   </header>
@@ -45,5 +44,10 @@ defineProps({
   cursor: pointer;
   top: 10px;
   right: 30px;
+}
+@media (max-width: 570px) {
+  .search {
+    width: 200px;
+  }
 }
 </style>
