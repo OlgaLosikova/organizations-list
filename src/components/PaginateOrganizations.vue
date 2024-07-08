@@ -1,4 +1,5 @@
 <script setup>
+import { defineProps } from "vue";
 defineProps({
   pageNumber: Number,
   setNextPage: Function,

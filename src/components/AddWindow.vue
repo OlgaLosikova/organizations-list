@@ -19,9 +19,9 @@ onClickOutside(target, () => {
 const onSubmit = () => {
   organizationId++;
   emit("onSubmit", {
-    name: newOrganization.name,
-    company: newOrganization.company,
-    phone: newOrganization.phone,
+    name: newOrganization.name.trim(),
+    company: newOrganization.company.trim(),
+    phone: newOrganization.phone.trim(),
     id: organizationId,
   });
   
