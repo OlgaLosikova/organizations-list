@@ -143,7 +143,7 @@ watch([changedOrganizations, filtredOrganizations, page], rotatePage);
   <Header :changeInput="changeInput" :openWindow="openWindow" />
   <main class="main">
     <div class="table-container">
-      <div class="table">
+      <div class="table"><div class="title-row">
         <div class="table-title">
           <a @click="sortCompany" href="#">Название</a
           ><img
@@ -173,6 +173,7 @@ watch([changedOrganizations, filtredOrganizations, page], rotatePage);
           />
         </div>
         <div class="table-title">Номер телефона</div>
+      </div>
         <TableRow
           v-for="item in organizationsPage"
           :key="item.id"
@@ -213,16 +214,23 @@ watch([changedOrganizations, filtredOrganizations, page], rotatePage);
   border-collapse: collapse;
   width: 100%;
 }
+.title-row {
+  display: table-row;
+  position: relative;
+  height: 50px;
+  background-color: #646cff;
+}
 .table-container {
   display: flex;
   background-color: rgba(255, 255, 255, 0.8);
 }
 
 .table-title {
+  width: 34%;
   display: table-cell;
   padding: 1rem;
   color: white;
-  background-color: #646cff;
+ 
 }
 .sort-icon {
   position: relative;

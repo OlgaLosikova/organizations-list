@@ -27,13 +27,13 @@ defineProps({
   display: table-row;
   position: relative;
   height: 50px;
-  width: 100%;
 }
 .table-data {
   display: table-cell;
   padding: 1rem;
   color: #333;
   border-top: 1px solid #ccc;
+  width: 34%;
 }
 .delete-icon {
   position: absolute;
@@ -49,12 +49,12 @@ defineProps({
 @media (max-width: 615px) {
   .delete-icon {
     right: 2px;
-    top: 16px;
   }
 }
 @media (max-width: 570px) {
   .delete-icon {
-    top: 24px;
+    background-color: #e9e9f2;
+    box-shadow: -5px -5px 8px 0px #e9e9f2;
   }
 }
 </style>
